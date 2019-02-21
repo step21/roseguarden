@@ -6,7 +6,7 @@ ENV LANG C.UTF-8
 RUN mkdir /web;mkdir /web/roseguarden
 WORKDIR /web/roseguarden
 
-RUN apt-get update -y && DEBIAN_FRONTEND=noninteractive apt-get install -y python apache2 libapache2-mod-wsgi python-pip python-setuptools python-wheel sqlite3 libffi-dev libjpeg-dev libpython-dev curl && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -y && DEBIAN_FRONTEND=noninteractive apt-get install -y python apache2 libapache2-mod-wsgi python-pip python-setuptools python-wheel sqlite3 libffi-dev libjpeg-dev libpython-dev curl zlib1g-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY ./server /web/roseguarden
 
