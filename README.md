@@ -3,6 +3,11 @@ RoseGuarden
 
 A remote door api and web application for Raspberry Pi, Odroid, Orange Pi or BeagleBoard (based on python).
 
+Docker
+=======
+
+Added a first docker image. Use `docker container run --device /dev/gpiomem -d roseguarden` or `docker container run --privileged -d roseguarden` to run it.
+
 Features
 ========
 
