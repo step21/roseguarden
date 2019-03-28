@@ -26,5 +26,9 @@ def platform_getType():
         if match.group(1) == 'BCM2709':
             RASPBERRY_PI_2
             return RASPBERRY_PI_2
+        if match.group(1) == 'BCM2835':
+            RASPBERRY_PI
+            return RASPBERRY_PI
     except:
+        print "Unknown GPIO architecture"
         return UNKNOWN
