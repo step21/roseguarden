@@ -1,46 +1,42 @@
-import requests
-
 __author__ = 'drobisch'
 
-import flask_alchemydumps
-from models import User, Door, Action
-from server import app, db
-from serializers import LogSerializer, UserSyncSerializer, SessionInfoSerializer, DoorSerializer, RfidTagInfoSerializer
-from statistics import StatisticsManager
-from werkzeug.datastructures import MultiDict
+import os
 import threading
 import time
-import config
 import base64
 import json
 import datetime
+from dateutil.relativedelta import relativedelta
+import flask_alchemydumps
+#from werkzeug.datastructures import MultiDict
+
+import config
+import requests
 import helpers
 import security
-from dateutil.relativedelta import relativedelta
-import os
+from models import User, Door, Action
 from models import RfidTagInfo
+from server import app, db
+from serializers import LogSerializer, UserSyncSerializer, SessionInfoSerializer, DoorSerializer, RfidTagInfoSerializer
+from statistics import StatisticsManager
+
 from RFID import RFIDReader
 from RFID import RFIDMockup
 from GPIO import GPIO
 from GPIO import GPIOStub
-
 
 GPIO_RELAY = 12
 GPIO_LED_GREEN = 11
 GPIO_LED_YELLOW = 13
 GPIO_LED_RED = 15
 
-
-
 class BackgroundWorker():
-
     def __init__(self, app):
         # initialize worker variables
         self.LED_STATE_IDLE = 0
         self.LED_STATE_ACCESS_GRANTED = 1
         self.LED_STATE_ACCESS_DENIED = 2
         self.LED_STATE_CLOSED = 3
-
 
         self.first = True
         self.app = app
@@ -80,8 +76,6 @@ class BackgroundWorker():
 
         GPIO.setup(GPIO_LED_RED, GPIO.OUT, initial=GPIO.LOW)
         GPIO.output(GPIO_LED_RED, GPIO.LOW)
-
-
 
     def run(self):
         # if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
@@ -821,9 +815,6 @@ class BackgroundWorker():
             GPIO.output(GPIO_LED_GREEN, GPIO.HIGH)
 
     def timer_cycle(self):
-        self.thr = threading.Timer(0.6, BackgroundWorker.timer_cycle, [self])
-        self.thr.start()
-
         self.requestTimer += 1
 
         if self.requestTimer >= 4:
@@ -894,7 +885,7 @@ class BackgroundWorker():
 
         if self.openingTimer >= 0:
             if self.openingTimer == 0:
-                print "Openening door"
+                print "Opening door"
             GPIO.output(GPIO_RELAY, GPIO.LOW)
 
             self.openingTimer += 1
@@ -903,8 +894,8 @@ class BackgroundWorker():
                 print "Closing door"
                 GPIO.output(GPIO_RELAY, GPIO.HIGH)
                 self.ledState = self.LED_STATE_CLOSED
-        else:
-            GPIO.output(GPIO_RELAY, GPIO.HIGH)
+        # else:
+            # GPIO.output(GPIO_RELAY, GPIO.HIGH)
 
         self.ledStateTimer += 1
         if self.ledStateTimer >= 0:
@@ -919,6 +910,10 @@ class BackgroundWorker():
                                 'Error occured', 'L1', 0, 'Internal')
                 db.session.add(logentry)
                 db.session.commit()
+
+        # reschedule the timer cycle
+        self.thr = threading.Timer(0.6, BackgroundWorker.timer_cycle, [self])
+        self.thr.start()
 
 
     def cancel(self):
