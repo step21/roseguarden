@@ -140,7 +140,7 @@ def create_db():
 
     # you can add some default user here
     print "Add admin user"
-    defaultUser1 = User('Administrator','pleasechangethepassword','RoseGuarden','Admin', 1)
+    defaultUser1 = User('Administrator','Admin1234','RoseGuarden','Admin', 1)
     defaultUser1.accessType = 1
     db.session.add(defaultUser1)
 

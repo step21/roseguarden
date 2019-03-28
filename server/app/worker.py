@@ -596,7 +596,8 @@ class BackgroundWorker():
                     try:
                         userIndex = userDict[str(action.userMail)]
                     except:
-                        print "Skip User [" + str(userIndex) + "] for statistics, because the user got removed."
+                        print "Skip User for statistics, because the user got removed."
+                        # print "Skip User [" + str(userIndex) + "] for statistics, because the user got removed."
                         continue
 
                     users[userIndex].monthlyAccessCount += 1
@@ -894,8 +895,10 @@ class BackgroundWorker():
                 print "Closing door"
                 GPIO.output(GPIO_RELAY, GPIO.HIGH)
                 self.ledState = self.LED_STATE_CLOSED
-        # else:
-            # GPIO.output(GPIO_RELAY, GPIO.HIGH)
+
+        #else:
+        #    GPIO.output(GPIO_RELAY, GPIO.HIGH)
+
 
         self.ledStateTimer += 1
         if self.ledStateTimer >= 0:
@@ -914,7 +917,6 @@ class BackgroundWorker():
         # reschedule the timer cycle
         self.thr = threading.Timer(0.6, BackgroundWorker.timer_cycle, [self])
         self.thr.start()
-
 
     def cancel(self):
         if os.environ.get("WERKZEUG_RUN_MAIN") == "true":

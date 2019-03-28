@@ -2,8 +2,8 @@ __author__ = 'drobisch'
 
 
 logging_dict = {}
-logging_dict['GPIO_LOG'] = False
-logging_dict['RFID_LOG'] = False
+logging_dict['GPIO_LOG'] = True
+logging_dict['RFID_LOG'] = True
 
 def log(module, log):
     if logging_dict[module] == True:
