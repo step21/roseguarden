@@ -39,11 +39,12 @@ def seed():
     "Seed RoseGuarden database filled default data after an migration/upgrade"
     seeder.seed()
 
-@manager.command
-def unittests():
-    "Test the server-functionality"
-    from app.security import securityTests
-    securityTests()
+# Outcomment unit tests in master instead of committing their removal
+#@manager.command
+#def unittests():
+#    "Test the server-functionality"
+#    from app.security import securityTests
+#    securityTests()
 
 @manager.command
 def seed_statistic():
