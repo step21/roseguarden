@@ -667,7 +667,7 @@ class BackgroundWorker():
 
                 try:
                     request_address = str(door.address) + ":5000" + '/users'
-                    response = requests.post(request_address, json= data, headers=headers, timeout=8)
+                    response = requests.post(request_address, json= data, headers=headers, timeout=30)
                     print response
                 except:
                     print "error while request users-sync"
@@ -683,7 +683,11 @@ class BackgroundWorker():
                 print 'warning: the node have the same node name'
             else:
                 request_address = str(door.address) + ":5000" + '/actions/admin'
-                response = requests.get(request_address, headers= headers, timeout=8)
+                try:
+                    response = requests.get(request_address, headers= headers, timeout=30)
+                except:
+                    print "No response for log from node"
+                    pass
                 print str(response)
 
                 response_data = json.loads(response.content)
@@ -696,7 +700,7 @@ class BackgroundWorker():
                     raise
                     return
 
-                deletion_response = requests.delete(request_address, headers= headers, timeout=8)
+                deletion_response = requests.delete(request_address, headers= headers, timeout=30)
                 print deletion_response
 
     def sync_cycle(self):
