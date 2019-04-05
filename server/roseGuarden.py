@@ -35,6 +35,13 @@ def start():
     backgroundWorker.cancel()
 
 @manager.command
+def open_the_door():
+    "Force the local door openend"
+    backgroundWorker.run()
+    backgroundWorker.open_the_door()
+
+
+@manager.command
 def seed():
     "Seed RoseGuarden database filled default data after an migration/upgrade"
     seeder.seed()
