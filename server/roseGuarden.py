@@ -7,8 +7,11 @@ from flask_migrate import MigrateCommand
 from flask_alchemydumps import AlchemyDumpsCommand
 from app.models import User, Action, Door, Setting, Statistic, StatisticEntry
 from app.config import SYNC_MASTER_DEFAULT_PASSWORD
+
 # outcomment this for now instead of removing as it was in staging/masterpi
 #from app.security import checkUserAccessPrivleges
+
+
 import app.config as config
 import app.seed as seeder
 import datetime
@@ -41,11 +44,11 @@ def open_the_door():
     backgroundWorker.run()
     backgroundWorker.open_the_door()
 
-
 @manager.command
 def seed():
     "Seed RoseGuarden database filled default data after an migration/upgrade"
     seeder.seed()
+
 
 # Outcomment unit tests in master instead of committing their removal
 #@manager.command
@@ -53,6 +56,8 @@ def seed():
 #    "Test the server-functionality"
 #    from app.security import securityTests
 #    securityTests()
+
+
 
 @manager.command
 def seed_statistic():
@@ -164,6 +169,7 @@ def create_db():
     print "Add default settings"
     Setting.query.delete()
     db.session.add(Setting('NODE_VALID_KEYS_MASK', '3', Setting.SETTINGTYPE_INT))
+
 
     print "Add log-entry"
     Action.query.delete()
