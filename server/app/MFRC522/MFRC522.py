@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
+import wiringpi as wGPIO
 import spi
 import signal
 import time
@@ -108,20 +109,29 @@ class MFRC522:
   serNum = []
   
   def __init__(self, dev='/dev/spidev0.0', spd=1000000):
-    spi.openSPI(device=dev,speed=spd)
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(22, GPIO.OUT)
-    GPIO.output(self.NRSTPD, 1)
+    self.spidev = spi.openSPI(device=dev,mode=2,speed=spd)
+    print "spidev dictionary: " + str(self.spidev)
+    wGPIO.wiringPiSetupSys()
+    #GPIO.setmode(GPIO.BOARD)
+    #wGPIO.pinMode(10, 0) # 10 as GPIO.BOARD is defined as 10 in source/common.h of RPi.GPIO (or, as there is seemingly no equivalent to setmode, maybe it is not necessary)
+    #GPIO.setup(22, GPIO.OUT)
+    wGPIO.pinMode(22, 1)
+    #GPIO.output(self.NRSTPD, 1)
+    wGPIO.pinMode(self.NRSTPD, 1) # NRSTPD = 22 (s.a.)
     self.MFRC522_Init()
   
   def MFRC522_Reset(self):
     self.Write_MFRC522(self.CommandReg, self.PCD_RESETPHASE)
   
   def Write_MFRC522(self, addr, val):
-    spi.transfer(((addr<<1)&0x7E,val))
+      #spi.transfer((addr<<1)&0x7E,val)
+      #print "Write value " + str(val)
+      spi.transfer(self.spidev, ((addr<<1)&0x7E,val))
   
   def Read_MFRC522(self, addr):
-    val = spi.transfer((((addr<<1)&0x7E) | 0x80,0))
+    #val = spi.transfer(((addr<<1)&0x7E) | 0x80,0)
+    val = spi.transfer(self.spidev, (((addr<<1)&0x7E) | 0x80,0))
+    #print "Read value " + str(val)
     return val[1]
   
   def SetBitMask(self, reg, mask):
@@ -388,7 +398,8 @@ class MFRC522:
         i = i+1
 
   def MFRC522_Init(self):
-    GPIO.output(self.NRSTPD, 1)
+    #GPIO.output(self.NRSTPD, 1)
+    wGPIO.pinMode(self.NRSTPD, 1)
   
     self.MFRC522_Reset();
     
